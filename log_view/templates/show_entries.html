@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block body %}
+
+
+
+<div class="col-md-12 container">
+  <form id="filterForm" class="form-inline" action="{{ url_for('views.show_entries') }}" method="GET">
+    <div class="form-group">
+      <label for="host">ホスト</label>
+      <input type="text" class="form-control" id="host" name="host" value="{{ filter.host }}">
+    </div>
+    <div class="form-group">
+      <label for="user">ユーザ</label>
+      <input type="text" class="form-control" id="user" name="user" value="{{ filter.user }}">
+    </div>
+    <div class="form-group">
+      <button id="btnSend" type="submit" class="btn btn-primary">フィルタ</button>
+      <button id="btnReset" type="button" class="btn btn-default">リセット</button>
+    </div>
+  </form>
+  <script type="text/javascript">
+$("#btnReset").bind("click", function(){
+    $("#filterForm").find("input[type='text']").val("");
+    $("#filterForm").submit();
+});
+  </script>
+</div>
+
+<br/>
+<hr/>
+
+<div class="col-md-12">
+  <div class="col-md-3 text-left">
+    {% if entries.has_prev %}
+    <a href="?page={{ entries.prev_num }}&host={{ filter.host }}&user={{ filter.user }}">&lt;&lt;戻る </a>
+    {% endif %}
+  </div>
+  <div class="col-md-6 text-center">
+    ( {{ entries.page }} / {{ entries.pages }} )
+  </div>
+  <div class="col-md-3 text-right">
+    {% if entries.has_next %}
+    <a href="?page={{ entries.next_num }}&host={{ filter.host }}&user={{ filter.user }}"> 次へ&gt;&gt;</a>
+    {% endif %}
+  </div>
+  <table class="table table-bordered table-striped table-hover">
+    <tr class="info">
+      <th>日時</th>
+      <th>IP</th>
+      <th>ホスト</th>
+      <th>ユーザ</th>
+      <th>イベント</th>
+      <th>元のログ</th>
+    </tr>
+    {% for entry in entries.items %}
+    <tr>
+      <td>{{ entry.timestamp }}</td>
+      <td>{{ entry.remote_addr }}</td>
+      <td><a href="?host={{ entry.host }}&user={{ filter.user }}">{{ entry.host }}</a></td>
+      <td><a href="?host={{ filter.host }}&user={{ entry.user }}">{{ entry.user }}</a></td>
+      <td>{{ entry.event_type }}</td>
+      <td>{{ entry.raw_text|safe }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+
+{% endblock %}

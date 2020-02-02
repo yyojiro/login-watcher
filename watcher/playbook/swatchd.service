@@ -1,0 +1,11 @@
+[Unit]
+Description = swatch service
+
+[Service]
+ExecStart = /usr/local/bin/swatchd.sh
+Restart = always
+Type = forking
+
+[Install]
+WantedBy = multi-user.target
+
